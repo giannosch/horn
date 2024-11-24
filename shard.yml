@@ -1,0 +1,13 @@
+name: horn
+version: 0.1.0
+
+authors:
+  - Giannos Chatziagapis <giannos.chatziagapis@gmail.com>
+
+targets:
+  horn:
+    main: src/horn.cr
+
+crystal: '>= 1.13.2'
+
+license: MIT
