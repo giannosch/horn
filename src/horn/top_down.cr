@@ -1,16 +1,20 @@
-require "./state"
 require "./expressions/*"
+require "./program"
+require "./state"
 require "./types/*"
 require "./values/*"
-require "./program"
+require "./visualizer"
 
 module Horn
   class TopDown
+    @visualizer = Visualizer.new
+
     def initialize(@p : Program, @objects : Array(TypedExpr))
     end
 
-    def eval(q : Expr) : Value
-      puts q
+    def eval(q : Expr, parent_id : String? = nil) : Value
+      visualizer_node = @visualizer.new_node(q, parent_id)
+
       case q
       when True
         Values::True.new
@@ -19,33 +23,33 @@ module Horn
       when Prop, Appl
         r = reduct(q)
         raise "Cannot reduce #{q}" unless r[1]
-        eval(r[0])
+        eval(r[0], visualizer_node.id)
       when Lambda
         @objects.select do |object|
           object.type == q.param_type
         end.each_with_object(Values::Set.new) do |object, set|
-          set[object.expr] = eval(Appl.new(q, object.expr))
+          set[object.expr] = eval(Appl.new(q, object.expr), visualizer_node.id)
         end
       when And
-        case eval(q.left)
+        case eval(q.left, visualizer_node.id)
         when Values::False
           Values::False.new
         when Values::True
-          eval(q.right)
+          eval(q.right, visualizer_node.id)
         else
           raise "#{q.left} is not of type ο"
         end
       when Or
-        case eval(q.left)
+        case eval(q.left, visualizer_node.id)
         when Values::True
           Values::True.new
         when Values::False
-          eval(q.right)
+          eval(q.right, visualizer_node.id)
         else
           raise "#{q.left} is not of type ο"
         end
       when Not
-        val = eval(q.expr).to_bool
+        val = eval(q.expr, visualizer_node.id).to_bool
         raise "#{q.expr} is not of type ο" if val.nil?
         Value.from_bool(!val)
       when Eq
@@ -54,10 +58,12 @@ module Horn
         @objects.select do |object|
           object.type == q.var_type
         end.any? do |object|
-          eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), object.expr)).to_bool
+          eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), object.expr), visualizer_node.id).to_bool
         end ? Values::True.new : Values::False.new
       else
         raise "Unknown expression: #{q}"
+      end.tap do |value|
+        visualizer_node.value = value
       end
     end
 
@@ -145,6 +151,10 @@ module Horn
       else
         q
       end
+    end
+
+    def visualize
+      @visualizer.to_json
     end
   end
 end
