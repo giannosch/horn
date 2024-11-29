@@ -13,9 +13,6 @@ module Horn
         @values = Hash(Expr | Value, Value).new
       end
 
-      def to_bool
-      end
-
       def to_s(io)
         values.to_s(io)
       end
@@ -32,8 +29,8 @@ module Horn
         values[key] = value
       end
 
-      def hash
-        values.hash
+      def hash(hasher)
+        values.hash(hasher)
       end
 
       def ==(other)

@@ -16,8 +16,8 @@ module Horn
         io << name.titleize
       end
 
-      def hash
-        name.hash
+      def hash(hasher)
+        {self.class, name}.hash(hasher)
       end
 
       def ==(other)

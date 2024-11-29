@@ -4,8 +4,20 @@ require "./true"
 module Horn
   module Values
     class False < Value
-      def to_bool
-        false
+      def false?
+        true
+      end
+
+      def |(other)
+        other
+      end
+
+      def &(other)
+        self
+      end
+
+      def ~
+        True.new
       end
 
       def to_s(io)
@@ -16,8 +28,8 @@ module Horn
         io << "F"
       end
 
-      def hash
-        self.class.hash
+      def hash(hasher)
+        self.class.hash(hasher)
       end
 
       def ==(other)

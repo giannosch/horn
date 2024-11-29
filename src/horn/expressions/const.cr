@@ -16,8 +16,8 @@ module Horn
         io << name.downcase
       end
 
-      def hash
-        name.hash
+      def hash(hasher)
+        {self.class, name}.hash(hasher)
       end
 
       def ==(other)

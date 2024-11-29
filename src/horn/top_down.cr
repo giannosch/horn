@@ -1,70 +1,85 @@
+require "./caching"
 require "./expressions/*"
 require "./program"
 require "./state"
+require "./typed_expression"
 require "./types/*"
 require "./values/*"
 require "./visualizer"
 
 module Horn
   class TopDown
+    include Expressions
+
     @visualizer = Visualizer.new
 
     def initialize(@p : Program, @objects : Array(TypedExpr))
+      @cache = Caching.new(@objects)
     end
 
     def eval(q : Expr, parent_id : String? = nil) : Value
+      q = q.as(Expr)
       visualizer_node = @visualizer.new_node(q, parent_id)
 
-      case q
-      when True
-        Values::True.new
-      when False
-        Values::False.new
-      when Prop, Appl
-        r = reduct(q)
-        raise "Cannot reduce #{q}" unless r[1]
-        eval(r[0], visualizer_node.id)
-      when Lambda
-        @objects.select do |object|
-          object.type == q.param_type
-        end.each_with_object(Values::Set.new) do |object, set|
-          set[object.expr] = eval(Appl.new(q, object.expr), visualizer_node.id)
-        end
-      when And
-        case eval(q.left, visualizer_node.id)
-        when Values::False
-          Values::False.new
-        when Values::True
-          eval(q.right, visualizer_node.id)
-        else
-          raise "#{q.left} is not of type ο"
-        end
-      when Or
-        case eval(q.left, visualizer_node.id)
-        when Values::True
-          Values::True.new
-        when Values::False
-          eval(q.right, visualizer_node.id)
-        else
-          raise "#{q.left} is not of type ο"
-        end
-      when Not
-        val = eval(q.expr, visualizer_node.id).to_bool
-        raise "#{q.expr} is not of type ο" if val.nil?
-        Value.from_bool(!val)
-      when Eq
-        Value.from_bool(q.left == q.right)
-      when Exists
-        @objects.select do |object|
-          object.type == q.var_type
-        end.any? do |object|
-          eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), object.expr), visualizer_node.id).to_bool
-        end ? Values::True.new : Values::False.new
-      else
-        raise "Unknown expression: #{q}"
-      end.tap do |value|
-        visualizer_node.value = value
+      visualizer_node.value = Values::FalseByDefault.new(q)
+      if cached = @cache[q]
+        visualizer_node.value = cached
+        return cached
       end
+      @cache[q] = Values::FalseByDefault.new(q)
+
+      value =
+        case q
+        when True
+          Values::True.new
+        when False
+          Values::False.new
+        when Prop, Appl
+          r = reduct(q)
+          raise "Cannot reduce #{q}" unless r[1]
+          eval(r[0], visualizer_node.id)
+        when Lambda
+          @objects.select do |object|
+            object.type == q.param_type
+          end.each_with_object(Values::Set.new) do |object, set|
+            set[object.expr] = eval(Appl.new(q, object.expr), visualizer_node.id)
+          end
+        when And
+          if (val = eval(q.left, visualizer_node.id)).is_a?(Values::False)
+            val
+          else
+            val & eval(q.right, visualizer_node.id)
+          end
+        when Or
+          if (val = eval(q.left, visualizer_node.id)).is_a?(Values::True)
+            val
+          else
+            val | eval(q.right, visualizer_node.id)
+          end
+        when Not
+          ~eval(q.expr, visualizer_node.id)
+        when Eq
+          (q.left == q.right) ? Values::True.new : Values::False.new
+        when Exists
+          @objects.select do |object|
+            object.type == q.var_type
+          end.map do |object|
+            if (val = eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), object.expr), visualizer_node.id)).true?
+              break [val]
+            end
+            val.as(Value)
+          end.reduce do |acc, val|
+            acc | val
+          end
+        else
+          raise "Unknown expression: #{q}"
+        end
+
+      value.due_to.delete(q) if value.is_a?(Values::FalseByDefault)
+      visualizer_node.value = value
+      @cache[q] = value
+
+      value
     end
 
     def reduct(q : Expr) : {Expr, Bool}

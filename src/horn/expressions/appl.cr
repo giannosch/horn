@@ -24,6 +24,15 @@ module Horn
       def inspect(io)
         io << "(#{func} #{arg})"
       end
+
+      def hash(hasher)
+        {self.class, func, arg}.hash(hasher)
+      end
+
+      def ==(other)
+        return false unless other.is_a?(Appl)
+        func == other.func && arg == other.arg
+      end
     end
   end
 end

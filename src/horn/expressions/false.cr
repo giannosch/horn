@@ -11,8 +11,8 @@ module Horn
         io << "F"
       end
 
-      def hash
-        self.class.hash
+      def hash(hasher)
+        self.class.hash(hasher)
       end
 
       def ==(other)

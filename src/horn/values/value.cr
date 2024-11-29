@@ -1,7 +1,27 @@
 module Horn
   abstract class Value
-    def self.from_bool(b : Bool)
-      (b ? Values::True : Values::False).new
+    def true?
+      false
+    end
+
+    def false?
+      false
+    end
+
+    def undef?
+      false
+    end
+
+    def |(other)
+      raise "Not implemented"
+    end
+
+    def &(other)
+      raise "Not implemented"
+    end
+
+    def ~
+      raise "Not implemented"
     end
 
     def to_json(builder : JSON::Builder)
