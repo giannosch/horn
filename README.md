@@ -1,18 +1,16 @@
 # HORN
 
-TODO: Write a description here
+Higher-Order Reasoning with Negation
 
 ## Installation
 
-TODO: Write installation instructions here
+1. Install Crystal and Shards. See [here](https://crystal-lang.org/install/).
+2. Run `shards install`
+3. Run `shards build`
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
+`./bin/horn`
 
 ## Contributors
 
