@@ -34,7 +34,7 @@ module Horn
           Values::True.new
         when False
           Values::False.new
-        when Prop, Appl
+        when Pred, Appl
           r = reduct(q)
           raise "Cannot reduce #{q}" unless r[1]
           eval(r[0], visualizer_node.id)
@@ -128,7 +128,7 @@ module Horn
             {Appl.new(func, r[0]), r[1]}
           end
         end
-      when Prop
+      when Pred
         if @p.has_key?(q)
           {@p[q], true}
         else

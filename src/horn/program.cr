@@ -1,3 +1,3 @@
 module Horn
-  alias Program = Hash(Expressions::Prop, Expr)
+  alias Program = Hash(Expressions::Pred, Expr)
 end

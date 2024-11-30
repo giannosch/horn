@@ -6,7 +6,7 @@ require "../spec_helper"
 module Horn
   include Values
 
-  dummy_expr = Expressions::Prop.new("dummy").as(Expr)
+  dummy_expr = Expressions::Pred.new("dummy").as(Expr)
 
   describe Value do
     it "disjuncts" do

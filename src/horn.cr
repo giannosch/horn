@@ -13,17 +13,17 @@ module Horn
   v = e.map(&.to_a).flatten.uniq
   # v << "alone"
 
-  p = {Prop.new("v") => Lambda.new(Var.new("X"), Types::I,
+  p = {Pred.new("v") => Lambda.new(Var.new("X"), Types::I,
     Or.from_list(v.map { |x| Eq.new(Var.new("X"), Const.new(x.to_s)) })
   ).as(Expr)}
 
-  p.merge!({Prop.new("e") => Lambda.new(Var.new("X"), Types::I,
+  p.merge!({Pred.new("e") => Lambda.new(Var.new("X"), Types::I,
     Lambda.new(Var.new("Y"), Types::I,
       Or.from_list(e.map { |x, y| And.new(Eq.new(Var.new("X"), Const.new(x.to_s)), Eq.new(Var.new("Y"), Const.new(y.to_s))) })
     )).as(Expr)})
 
   p.merge!({
-    Prop.new("remove") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
+    Pred.new("remove") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
       Lambda.new(Var.new("A"), Types::I,
         Lambda.new(Var.new("X"), Types::I,
           And.new(
@@ -31,7 +31,7 @@ module Horn
             Not.new(Eq.new(Var.new("X"), Var.new("A")))
           )
         ))).as(Expr),
-    Prop.new("remove2") => Lambda.new(Var.new("E"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
+    Pred.new("remove2") => Lambda.new(Var.new("E"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
       Lambda.new(Var.new("A"), Types::I,
         Lambda.new(Var.new("X"), Types::I,
           Lambda.new(Var.new("Y"), Types::I,
@@ -43,7 +43,7 @@ module Horn
               )
             )
           )))).as(Expr),
-    Prop.new("winning") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
+    Pred.new("winning") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
       Lambda.new(Var.new("E"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
         Lambda.new(Var.new("X"), Types::I,
           Exists.new(Var.new("Y"), Types::I,
@@ -51,14 +51,14 @@ module Horn
               Appl.from_list([Var.new("E"), Var.new("X"), Var.new("Y")]),
               Not.new(Eq.new(Var.new("X"), Var.new("Y"))),
               Not.new(Appl.from_list([
-                Prop.new("winning"),
-                Appl.from_list([Prop.new("remove"), Var.new("V"), Var.new("X")]),
-                Appl.from_list([Prop.new("remove2"), Var.new("E"), Var.new("X")]),
+                Pred.new("winning"),
+                Appl.from_list([Pred.new("remove"), Var.new("V"), Var.new("X")]),
+                Appl.from_list([Pred.new("remove2"), Var.new("E"), Var.new("X")]),
                 Var.new("Y"),
               ])),
             ])
           )))).as(Expr),
-    Prop.new("transitive") => Lambda.new(Var.new("R"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
+    Pred.new("transitive") => Lambda.new(Var.new("R"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
       Lambda.new(Var.new("X"), Types::I,
         Lambda.new(Var.new("Y"), Types::I,
           Or.new(
@@ -67,7 +67,7 @@ module Horn
               And.new(
                 Appl.new(Appl.new(Var.new("R"), Var.new("X")), Var.new("Z")),
                 Appl.from_list([
-                  Prop.new("transitive"),
+                  Pred.new("transitive"),
                   Var.new("R"),
                   Var.new("Z"),
                   Var.new("Y"),
@@ -76,37 +76,37 @@ module Horn
             )
           )
         ))).as(Expr),
-    Prop.new("disconnected") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
+    Pred.new("disconnected") => Lambda.new(Var.new("V"), Types::Arrow.new(Types::I, Types::O),
       Lambda.new(Var.new("E"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)),
         Lambda.new(Var.new("X"), Types::I,
           Exists.new(Var.new("Y"), Types::I,
             And.new(
               Not.new(Eq.new(Var.new("X"), Var.new("Y"))),
               Not.new(Appl.from_list([
-                Prop.new("transitive"), Var.new("E"), Var.new("X"), Var.new("Y"),
+                Pred.new("transitive"), Var.new("E"), Var.new("X"), Var.new("Y"),
               ]))
             )
           )))).as(Expr),
   })
 
   objects = v.map { |x| TypedExpr.new(Const.new(x.to_s), Types::I) }
-  objects << TypedExpr.new(Prop.new("e"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)))
-  objects << TypedExpr.new(Prop.new("v"), Types::Arrow.new(Types::I, Types::O))
-  objects << TypedExpr.new(Prop.new("transitive"), Types::Arrow.new(Types::Arrow.new(Types::O, Types::O), Types::Arrow.new(Types::I, Types::O)))
+  objects << TypedExpr.new(Pred.new("e"), Types::Arrow.new(Types::I, Types::Arrow.new(Types::I, Types::O)))
+  objects << TypedExpr.new(Pred.new("v"), Types::Arrow.new(Types::I, Types::O))
+  objects << TypedExpr.new(Pred.new("transitive"), Types::Arrow.new(Types::Arrow.new(Types::O, Types::O), Types::Arrow.new(Types::I, Types::O)))
 
   strategy = TopDown.new(p, objects)
 
   puts strategy.eval(Appl.from_list([
-    Prop.new("winning"),
-    Prop.new("v"),
-    Prop.new("e"),
+    Pred.new("winning"),
+    Pred.new("v"),
+    Pred.new("e"),
     Const.new(v.first.to_s),
   ]))
 
   # puts strategy.eval(Appl.from_list([
-  #   Prop.new("disconnected"),
-  #   Prop.new("v"),
-  #   Prop.new("e"),
+  #   Pred.new("disconnected"),
+  #   Pred.new("v"),
+  #   Pred.new("e"),
   #   Const.new(v.first.to_s),
   # ]))
 

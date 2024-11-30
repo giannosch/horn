@@ -2,7 +2,7 @@ require "./expr"
 
 module Horn
   module Expressions
-    class Prop < Expr
+    class Pred < Expr
       property name : String
 
       def initialize(@name : String)
@@ -21,7 +21,7 @@ module Horn
       end
 
       def ==(other)
-        return false unless other.is_a?(Prop)
+        return false unless other.is_a?(Pred)
         name == other.name
       end
     end
