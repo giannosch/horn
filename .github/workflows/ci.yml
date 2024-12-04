@@ -1,5 +1,6 @@
 on:
   push:
+    branches: [master]
   pull_request:
     branches: [master]
 jobs:
@@ -10,12 +11,14 @@ jobs:
     steps:
       - name: Download source
         uses: actions/checkout@v4
-      - name: Install shards
-        run: shards install
+      - name: Safe directory
+        run: git config --global --add safe.directory '*'
       - name: Check formatting
         run: crystal tool format --check
+      - name: Install tree-sitter
+        run: apt update && apt install libtree-sitter-dev -y
       - name: Build
-        run: shards build
+        run: make
       - name: Run tests
         run: crystal spec --order=random
       

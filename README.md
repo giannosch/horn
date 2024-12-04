@@ -5,8 +5,9 @@ Higher-Order Reasoning with Negation
 ## Installation
 
 1. Install Crystal and Shards. See [here](https://crystal-lang.org/install/).
-2. Run `shards install`
-3. Run `shards build`
+2. Install [tree-sitter](https://github.com/tree-sitter/tree-sitter):
+    - On ubuntu: `apt install libtree-sitter-dev`
+3. Run `make`.
 
 ## Usage
 
