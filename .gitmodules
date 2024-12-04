@@ -1,0 +1,3 @@
+[submodule "tree-sitter-horn"]
+	path = tree-sitter-horn
+	url = https://github.com/giannosch/tree-sitter-horn
