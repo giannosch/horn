@@ -1,4 +1,4 @@
-@[Link(ldflags: "-L#{__DIR__}/../../../tree-sitter-horn/ -l:libtree-sitter-horn.a")]
+@[Link(ldflags: "-L#{__DIR__}/../../../tree-sitter-horn/ -ltree-sitter-horn")]
 @[Link(ldflags: "-L/usr/ -ltree-sitter")]
 lib TSLib
   struct TSLanguage
