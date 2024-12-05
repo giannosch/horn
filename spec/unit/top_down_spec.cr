@@ -22,22 +22,22 @@ module Horn
     Const.new("p_error")      => Not.new(Const.new("p_error")),
 
   }
-  objects = [
-    TypedExpr.new(Const.new("p_true"), Types::O),
-    TypedExpr.new(Const.new("p_false"), Types::O),
-    TypedExpr.new(Const.new("p_f0"), Types::O),
-    TypedExpr.new(Const.new("p_f2"), Types::O),
-    TypedExpr.new(Const.new("p_and"), Types::O),
-    TypedExpr.new(Const.new("p_a"), Types::Arrow.new(Types::I, Types::O)),
-    TypedExpr.new(Const.new("p_b"), Types::Arrow.new(Types::I, Types::O)),
-    TypedExpr.new(Const.new("p_a_and_b"), Types::O),
-    TypedExpr.new(Const.new("p_a_or_b"), Types::O),
-    TypedExpr.new(Const.new("p_exists"), Types::O),
-    TypedExpr.new(Const.new("p_error"), Types::O),
-    TypedExpr.new(Const.new("a"), Types::I),
-    TypedExpr.new(Const.new("b"), Types::I),
-  ]
-  strategy = TopDown.new(p, objects)
+  const_collection = {
+    Const.new("p_true")    => Types::O.new,
+    Const.new("p_false")   => Types::O.new,
+    Const.new("p_f0")      => Types::O.new,
+    Const.new("p_f2")      => Types::O.new,
+    Const.new("p_and")     => Types::O.new,
+    Const.new("p_a")       => Types::Arrow.new(Types::I.new, Types::O.new),
+    Const.new("p_b")       => Types::Arrow.new(Types::I.new, Types::O.new),
+    Const.new("p_a_and_b") => Types::O.new,
+    Const.new("p_a_or_b")  => Types::O.new,
+    Const.new("p_exists")  => Types::O.new,
+    Const.new("p_error")   => Types::O.new,
+    Const.new("a")         => Types::I.new,
+    Const.new("b")         => Types::I.new,
+  }
+  strategy = TopDown.new(p, const_collection)
   describe TopDown do
     it "evals" do
       strategy.eval(Const.new("p_true")).true?.should be_true
