@@ -3,6 +3,10 @@ require "./type"
 module Horn
   module Types
     class O < Type
+      def predicate?
+        true
+      end
+
       def to_s(io)
         io << "ο"
       end

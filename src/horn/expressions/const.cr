@@ -16,6 +16,10 @@ module Horn
         io << name.downcase
       end
 
+      def to_json_object_key
+        to_s.to_json_object_key
+      end
+
       def hash(hasher)
         {self.class, name}.hash(hasher)
       end
