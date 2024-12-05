@@ -1,5 +1,4 @@
-require "./*"
-
 module Horn
-  alias Type = Types::I.class | Types::O.class | Types::Arrow
+  class Type
+  end
 end

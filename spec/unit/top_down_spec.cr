@@ -13,12 +13,12 @@ module Horn
     Const.new("p_f2")         => Not.new(Not.new(Const.new("p_f2"))),
     Const.new("p_and")        => And.new(Const.new("p_true"), Const.new("p_false")),
     Const.new("p_or")         => Or.new(Const.new("p_true"), Const.new("p_false")),
-    Const.new("p_a")          => Lambda.new(Var.new("X"), Types::I, Eq.new(Var.new("X"), Const.new("a"))),
-    Const.new("p_b")          => Lambda.new(Var.new("X"), Types::I, Eq.new(Var.new("X"), Const.new("b"))),
-    Const.new("p_a_and_b")    => Exists.new(Var.new("X"), Types::I, And.new(Appl.new(Const.new("p_a"), Var.new("X")), Appl.new(Const.new("p_b"), Var.new("X")))),
-    Const.new("p_a_or_b")     => Exists.new(Var.new("X"), Types::I, Or.new(Appl.new(Const.new("p_a"), Var.new("X")), Appl.new(Const.new("p_b"), Var.new("X")))),
-    Const.new("p_exists")     => Exists.new(Var.new("X"), Types::I, Appl.new(Const.new("p_a"), Var.new("X"))),
-    Const.new("p_exists_not") => Exists.new(Var.new("X"), Types::I, Not.new(Appl.new(Const.new("p_a"), Var.new("X")))),
+    Const.new("p_a")          => Lambda.new(Var.new("X"), Types::I.new, Eq.new(Var.new("X"), Const.new("a"))),
+    Const.new("p_b")          => Lambda.new(Var.new("X"), Types::I.new, Eq.new(Var.new("X"), Const.new("b"))),
+    Const.new("p_a_and_b")    => Exists.new(Var.new("X"), Types::I.new, And.new(Appl.new(Const.new("p_a"), Var.new("X")), Appl.new(Const.new("p_b"), Var.new("X")))),
+    Const.new("p_a_or_b")     => Exists.new(Var.new("X"), Types::I.new, Or.new(Appl.new(Const.new("p_a"), Var.new("X")), Appl.new(Const.new("p_b"), Var.new("X")))),
+    Const.new("p_exists")     => Exists.new(Var.new("X"), Types::I.new, Appl.new(Const.new("p_a"), Var.new("X"))),
+    Const.new("p_exists_not") => Exists.new(Var.new("X"), Types::I.new, Not.new(Appl.new(Const.new("p_a"), Var.new("X")))),
     Const.new("p_error")      => Not.new(Const.new("p_error")),
 
   }

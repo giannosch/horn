@@ -2,7 +2,7 @@ require "./type"
 
 module Horn
   module Types
-    class Arrow
+    class Arrow < Type
       property left : Type
       property right : Type
 
@@ -15,6 +15,11 @@ module Horn
 
       def inspect(io)
         io << "(#{left} -> #{right})"
+      end
+
+      def ==(other)
+        return false unless other.is_a?(Arrow)
+        left == other.left && right == other.right
       end
     end
   end
