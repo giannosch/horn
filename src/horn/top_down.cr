@@ -59,6 +59,9 @@ module Horn
         when Not
           ~eval(q.expr, visualizer_node.id)
         when Eq
+          if !@const_collection.has_key?(q.left) || @const_collection[q.left] != @const_collection[q.right]
+            raise "Cannot compare #{q.left} to #{q.right}"
+          end
           (q.left == q.right) ? Values::True.new : Values::False.new
         when Exists
           @const_collection.select do |const, type|
@@ -129,7 +132,9 @@ module Horn
           end
         end
       when Const
-        if @p.has_key?(q)
+        if !@const_collection[q].predicate?
+          {q, false}
+        elsif @p.has_key?(q)
           {@p[q], true}
         else
           {False.new, true}
