@@ -1,12 +1,12 @@
 require "../../src/horn/values/*"
-require "../../src/horn/expressions/prop"
+require "../../src/horn/expressions/const"
 
 require "../spec_helper"
 
 module Horn
   include Values
 
-  dummy_expr = Expressions::Pred.new("dummy").as(Expr)
+  dummy_expr = Expressions::Const.new("dummy").as(Expr)
 
   describe Value do
     it "disjuncts" do
