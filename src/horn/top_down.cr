@@ -1,8 +1,8 @@
 require "./caching"
+require "./const_collection"
 require "./expressions/*"
 require "./program"
 require "./state"
-require "./typed_expression"
 require "./types/*"
 require "./values/*"
 require "./visualizer"
@@ -13,8 +13,8 @@ module Horn
 
     @visualizer = Visualizer.new
 
-    def initialize(@p : Program, @objects : Array(TypedExpr))
-      @cache = Caching.new(@objects)
+    def initialize(@p : Program, @const_collection : ConstCollection)
+      @cache = Caching.new(@const_collection)
     end
 
     def eval(q : Expr, parent_id : String? = nil) : Value
@@ -39,10 +39,10 @@ module Horn
           raise "Cannot reduce #{q}" unless r[1]
           eval(r[0], visualizer_node.id)
         when Lambda
-          @objects.select do |object|
-            object.type == q.param_type
-          end.each_with_object(Values::Set.new) do |object, set|
-            set[object.expr] = eval(Appl.new(q, object.expr), visualizer_node.id)
+          @const_collection.select do |const, type|
+            type == q.param_type
+          end.keys.each_with_object(Values::Set.new) do |const, set|
+            set[const] = eval(Appl.new(q, const), visualizer_node.id)
           end
         when And
           if (val = eval(q.left, visualizer_node.id)).is_a?(Values::False)
@@ -61,10 +61,10 @@ module Horn
         when Eq
           (q.left == q.right) ? Values::True.new : Values::False.new
         when Exists
-          @objects.select do |object|
-            object.type == q.var_type
-          end.map do |object|
-            if (val = eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), object.expr), visualizer_node.id)).true?
+          @const_collection.select do |const, type|
+            type == q.var_type
+          end.keys.map do |const|
+            if (val = eval(Appl.new(Lambda.new(q.var, q.var_type, q.expr), const), visualizer_node.id)).true?
               break [val]
             end
             val.as(Value)

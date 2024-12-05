@@ -1,14 +1,14 @@
 require "./expressions/*"
+require "./values/value"
+require "./const_collection"
 
 module Horn
   class Caching
     include Expressions
 
     @cache = Hash(Expr, Value).new
-    @valid_exprs : ::Set(Expr)
 
-    def initialize(objects)
-      @valid_exprs = objects.map(&.expr).to_set
+    def initialize(@const_collection : ConstCollection)
     end
 
     def [](expr : Expr)
@@ -26,7 +26,7 @@ module Horn
       when Appl
         cache_expr?(expr.func) && cache_expr?(expr.arg)
       when Const
-        @valid_exprs.includes?(expr)
+        @const_collection.has_key?(expr)
       else
         false
       end
