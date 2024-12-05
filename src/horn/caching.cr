@@ -25,7 +25,7 @@ module Horn
       case expr
       when Appl
         cache_expr?(expr.func) && cache_expr?(expr.arg)
-      when Pred, Const
+      when Const
         @valid_exprs.includes?(expr)
       else
         false
