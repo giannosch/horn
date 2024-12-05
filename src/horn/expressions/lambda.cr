@@ -4,18 +4,22 @@ module Horn
   module Expressions
     class Lambda < Expr
       property param : Var
-      property param_type : Type
+      property param_type : Type?
       property body : Expr
 
-      def initialize(@param : Var, @param_type : Type, @body : Expr)
+      def initialize(@param : Var, @param_type : Type?, @body : Expr)
       end
 
       def to_s(io)
-        io << "(λ#{param}:#{param_type}.#{body})"
+        if param_type
+          io << "(λ#{param}:#{param_type}.#{body})"
+        else
+          io << "(λ#{param}.#{body})"
+        end
       end
 
       def inspect(io)
-        io << "(λ#{param}:#{param_type}.#{body})"
+        to_s(io)
       end
     end
   end

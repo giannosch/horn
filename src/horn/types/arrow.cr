@@ -9,6 +9,10 @@ module Horn
       def initialize(@left : Type, @right : Type)
       end
 
+      def predicate?
+        right.predicate?
+      end
+
       def to_s(io)
         io << "(#{left} -> #{right})"
       end
