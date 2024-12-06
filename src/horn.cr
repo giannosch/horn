@@ -1,7 +1,7 @@
 require "option_parser"
 
 require "./horn/parser/parser"
-require "./horn/top_down"
+require "./horn/strategies/top_down"
 
 module Horn
   VERSION = "0.1.0"
