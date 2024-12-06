@@ -1,4 +1,4 @@
-require "../../src/horn/top_down"
+require "../../src/horn/strategies/top_down"
 
 require "../spec_helper"
 
