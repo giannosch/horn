@@ -3,33 +3,21 @@ require "./values/value"
 require "./const_collection"
 
 module Horn
-  class Caching
+  class Caching(K, V)
     include Expressions
 
-    @cache = Hash(Expr, Value).new
+    @cache = Hash(K, V).new
 
-    def initialize(@const_collection : ConstCollection)
+    def initialize(@valid : Proc(K, Bool) = ->(key : K) { true })
     end
 
-    def [](expr : Expr)
-      @cache[expr]?
+    def [](key : K)
+      @cache[key]?
     end
 
-    def []=(expr : Expr, val : Value)
-      @cache[expr] = val if cache_expr?(expr)
-      # puts (@cache) if cache_expr?(expr)
+    def []=(key : K, val : V)
+      @cache[key] = val if @valid.call(key)
       val
-    end
-
-    def cache_expr?(expr : Expr)
-      case expr
-      when Appl
-        cache_expr?(expr.func) && cache_expr?(expr.arg)
-      when Const
-        @const_collection.has_key?(expr)
-      else
-        false
-      end
     end
   end
 end

@@ -17,7 +17,7 @@ module Horn
     @visualizer = Visualizer.new
 
     def initialize(@program : Program, @const_collection : ConstCollection)
-      @cache = Caching.new(@const_collection)
+      @cache = Caching(Expr, Value).new(->cache_valid?(Expr))
     end
 
     def eval(expr : Expr) : Value
@@ -153,6 +153,17 @@ module Horn
 
     def visualize
       @visualizer.to_json
+    end
+
+    private def cache_valid?(expr : Expr)
+      case expr
+      when Appl
+        cache_valid?(expr.func) && cache_valid?(expr.arg)
+      when Const
+        @const_collection.has_key?(expr)
+      else
+        false
+      end
     end
   end
 end
