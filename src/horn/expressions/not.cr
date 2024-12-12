@@ -15,6 +15,15 @@ module Horn
       def inspect(io)
         io << "¬#{expr}"
       end
+
+      def hash(hasher)
+        {self.class, expr}.hash(hasher)
+      end
+
+      def ==(other)
+        return false unless other.is_a?(Not)
+        expr == other.expr
+      end
     end
   end
 end

@@ -16,6 +16,15 @@ module Horn
       def inspect(io)
         io << "(#{left} ≈ #{right})"
       end
+
+      def hash(hasher)
+        {self.class, left.hash ^ right.hash}.hash(hasher)
+      end
+
+      def ==(other)
+        return false unless other.is_a?(Eq)
+        (left == other.left && right == other.right) || (left == other.right && right == other.left)
+      end
     end
   end
 end
