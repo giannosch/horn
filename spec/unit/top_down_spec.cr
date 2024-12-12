@@ -52,8 +52,8 @@ module Horn
       strategy.eval(Const.new("p_or")).true?.should be_true
       strategy.eval(Appl.new(Const.new("p_a"), Const.new("a"))).true?.should be_true
       strategy.eval(Appl.new(Const.new("p_a"), Const.new("b"))).false?.should be_true
-      strategy.eval(Const.new("p_b")).as(Values::Set)[Const.new("b")].true?.should be_true
-      strategy.eval(Const.new("p_b")).as(Values::Set)[Const.new("a")].false?.should be_true
+      strategy.eval(Const.new("p_b")).as(Values::Map)[Const.new("b")].true?.should be_true
+      strategy.eval(Const.new("p_b")).as(Values::Map)[Const.new("a")].false?.should be_true
       strategy.eval(Const.new("p_a_and_b")).false?.should be_true
       strategy.eval(Const.new("p_a_or_b")).true?.should be_true
       strategy.eval(Const.new("p_exists")).true?.should be_true
