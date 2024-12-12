@@ -3,7 +3,7 @@ require "../expressions/expr"
 
 module Horn
   module Values
-    class Set < Value
+    class Map < Value
       property values
 
       def initialize(@values : Hash(Expr | Value, Value))
@@ -34,7 +34,7 @@ module Horn
       end
 
       def ==(other)
-        return false unless other.is_a?(Set)
+        return false unless other.is_a?(Map)
         values == other.values
       end
     end
