@@ -1,0 +1,9 @@
+a,b :: i.
+p :: i->o.
+p a.
+
+subset, equals :: (i->o)->(i->o)->o.
+subset P Q :- ~]X:i P X /\ ~Q X.
+equals P Q :- subset P Q, subset Q P.
+
+?- equals p Q_.

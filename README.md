@@ -20,7 +20,21 @@ r :- ]X:i ~(p X).
 
 ?- r.
 $ ./bin/horn -f spec/fixtures/program.horn
-r => T
+r =>
+T
+$ cat spec/fixtures/equals.horn
+a,b :: i.
+p :: i->o.
+p a.
+
+subset, equals :: (i->o)->(i->o)->o.
+subset P Q :- ~]X:i P X /\ ~Q X.
+equals P Q :- subset P Q, subset Q P.
+
+?- equals p Q_.
+$ ./bin/horn -s dnf -f spec/fixtures/equals.horn
+((equals p) Q_) =>
+(Q_ a), ¬(Q_ b)
 ```
 
 ## Contributors
