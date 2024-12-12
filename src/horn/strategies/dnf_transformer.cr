@@ -321,5 +321,9 @@ module Horn
       end
       (positive & negative).empty?
     end
+
+    protected def self.name
+      "dnf"
+    end
   end
 end

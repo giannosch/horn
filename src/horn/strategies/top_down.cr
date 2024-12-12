@@ -165,5 +165,9 @@ module Horn
         false
       end
     end
+
+    protected def self.name
+      "top_down"
+    end
   end
 end
