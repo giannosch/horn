@@ -47,7 +47,7 @@ module Horn
           eval(r[0], visualizer_node.id)
         when Lambda
           @const_collection.select do |const, type|
-            type == expr.param_type
+            type == (expr.param_type || Types::I.new)
           end.keys.each_with_object(Values::Map.new) do |const, set|
             set[const] = eval(Appl.new(expr, const), visualizer_node.id)
           end
