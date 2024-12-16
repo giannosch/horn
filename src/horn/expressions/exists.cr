@@ -10,6 +10,14 @@ module Horn
       def initialize(@var : Var, @var_type : Type, @expr : Expr)
       end
 
+      def children
+        [expr]
+      end
+
+      def bounded_var
+        var
+      end
+
       def to_s(io)
         io << "(∃#{var}:#{var_type}.#{expr})"
       end

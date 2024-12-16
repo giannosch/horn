@@ -17,6 +17,10 @@ module Horn
         end
       end
 
+      def children
+        [func, arg]
+      end
+
       def to_s(io)
         io << "(#{func} #{arg})"
       end

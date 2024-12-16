@@ -9,6 +9,10 @@ module Horn
       def initialize(@left : Expr, @right : Expr)
       end
 
+      def children
+        [left, right]
+      end
+
       def to_s(io)
         io << "(#{left} ≈ #{right})"
       end
