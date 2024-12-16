@@ -8,6 +8,10 @@ module Horn
       def initialize(@expr : Expr)
       end
 
+      def children
+        [expr]
+      end
+
       def to_s(io)
         io << "¬#{expr}"
       end

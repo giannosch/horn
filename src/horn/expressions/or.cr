@@ -17,6 +17,10 @@ module Horn
         end
       end
 
+      def children
+        [left, right]
+      end
+
       def to_s(io)
         io << "(#{left} ∨ #{right})"
       end

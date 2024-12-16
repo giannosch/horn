@@ -34,5 +34,19 @@ module Horn
         expr
       end
     end
+
+    def free_vars?(expr : Expr, except = Set(Var).new) : Bool
+      case expr
+      when Var
+        !except.includes?(expr)
+      when And, Or, Eq, Not, Appl
+        expr.children.any? { |child| free_vars?(child, except) }
+      when Lambda, Exists, Forall
+        except = except.dup << expr.bounded_var
+        expr.children.any? { |child| free_vars?(child, except) }
+      else
+        false
+      end
+    end
   end
 end
