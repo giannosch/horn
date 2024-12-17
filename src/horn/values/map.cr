@@ -4,7 +4,7 @@ require "../expressions/expr"
 module Horn
   module Values
     class Map < Value
-      property values
+      getter values
 
       def initialize(@values : Hash(Expr | Value, Value))
       end

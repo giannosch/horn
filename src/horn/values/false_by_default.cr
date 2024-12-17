@@ -3,8 +3,8 @@ require "../expressions/expr"
 module Horn
   module Values
     class FalseByDefault < Value
-      property negation_depth = 0
-      property due_to : ::Set(Expr)
+      getter negation_depth = 0
+      getter due_to : ::Set(Expr)
 
       def initialize(expr : Expr, negation_depth = 0)
         initialize([expr].to_set, negation_depth)
