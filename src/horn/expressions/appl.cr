@@ -3,8 +3,8 @@ require "./expr"
 module Horn
   module Expressions
     class Appl < Expr
-      property func : Expr
-      property arg : Expr
+      getter func : Expr
+      getter arg : Expr
 
       def initialize(@func : Expr, @arg : Expr)
       end

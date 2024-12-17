@@ -3,7 +3,7 @@ require "./expr"
 module Horn
   module Expressions
     class Var < Expr
-      property name : String
+      getter name : String
 
       def initialize(@name : String)
       end

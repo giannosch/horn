@@ -3,9 +3,9 @@ require "./expr"
 module Horn
   module Expressions
     class Exists < Expr
-      property var : Var
-      property var_type : Type
-      property expr : Expr
+      getter var : Var
+      getter var_type : Type
+      getter expr : Expr
 
       def initialize(@var : Var, @var_type : Type, @expr : Expr)
       end
