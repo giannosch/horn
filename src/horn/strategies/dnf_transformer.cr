@@ -6,6 +6,7 @@ require "../values/*"
 require "../var_helper"
 require "../visualizer"
 require "./strategy"
+require "./top_down"
 
 module Horn
   class DNFTransformer < Strategy
@@ -16,6 +17,7 @@ module Horn
 
     def initialize(@program : Program, @const_collection : ConstCollection)
       @cache = Caching(Set(Expr), Bool).new(->cache_valid?(Set(Expr)))
+      @top_down = TopDown.new(@program, @const_collection)
     end
 
     def run(expr : Expr)
@@ -35,7 +37,8 @@ module Horn
             disjucts << {expr.right, parent_id}
             expr = expr.left
           end
-          conjuncts = conjuncts(expr).to_set
+          expr, changed = top_down(expr)
+          next if changed
           expr, changed = logic_transform(expr)
           next if changed
           expr, changed = beta_reduct(expr)
@@ -267,6 +270,34 @@ module Horn
         end
       else
         {expr, false}
+      end
+    end
+
+    def top_down(expr : Expr) : {Expr, Bool}
+      case expr
+      when And
+        r = top_down(expr.left)
+        if r[1]
+          {And.new(r[0], expr.right), true}
+        else
+          r = top_down(expr.right)
+          {And.new(expr.left, r[0]), r[1]}
+        end
+      when True, False
+        {expr, false}
+      else
+        unless free_vars?(expr)
+          case @top_down.eval(expr)
+          when .true?
+            {True.new, true}
+          when .false?
+            {False.new, true}
+          else
+            {expr, false}
+          end
+        else
+          {expr, false}
+        end
       end
     end
 
