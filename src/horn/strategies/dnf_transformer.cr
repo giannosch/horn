@@ -21,6 +21,7 @@ module Horn
     end
 
     def run(expr : Expr)
+      @cache.reset
       disjucts = Array({Expr, String?}).new
       disjucts << {expr, nil}
       while (expr_and_parent_id = disjucts.last?)
