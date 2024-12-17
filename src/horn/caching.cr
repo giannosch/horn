@@ -19,5 +19,9 @@ module Horn
       @cache[key] = val if @valid.call(key)
       val
     end
+
+    def reset
+      @cache = Hash(K, V).new
+    end
   end
 end
