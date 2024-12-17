@@ -3,7 +3,7 @@ require "./expr"
 module Horn
   module Expressions
     class Not < Expr
-      property expr : Expr
+      getter expr : Expr
 
       def initialize(@expr : Expr)
       end

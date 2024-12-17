@@ -77,9 +77,9 @@ module Horn
         when "var"
           var = @expression_parser.parse_var(arg_node)
           if vars.includes?(var)
-            var_original = var.dup
+            var_original = var
             while vars.includes?(var)
-              var.name += '\''
+              var = Var.new(var.name + '\'')
             end
             argument_constraints << Eq.new(var_original, var)
           end
