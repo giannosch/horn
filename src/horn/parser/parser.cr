@@ -9,9 +9,9 @@ module Horn
   class Parser
     include Expressions
 
-    property program = Program.new
-    property const_collection = ConstCollection.new
-    property queries = Array(Expr).new
+    getter program = Program.new
+    getter const_collection = ConstCollection.new
+    getter queries = Array(Expr).new
 
     @ts_parser : TSParser
     @type_parser : TypeParser
