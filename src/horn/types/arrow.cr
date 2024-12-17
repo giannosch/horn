@@ -3,8 +3,8 @@ require "./type"
 module Horn
   module Types
     class Arrow < Type
-      property left : Type
-      property right : Type
+      getter left : Type
+      getter right : Type
 
       def initialize(@left : Type, @right : Type)
       end
